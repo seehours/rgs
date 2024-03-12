@@ -8,3 +8,4 @@ RGS 软光栅项目
 
 参考内容：
  - https://github.com/zauonlok/renderer
+ - https://learnopengl-cn.github.io/
