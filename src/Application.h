@@ -2,7 +2,6 @@
 #include "Window.h"
 
 #include <string>
-#include <memory>
 
 namespace RGS {
 

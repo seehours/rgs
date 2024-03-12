@@ -10,14 +10,16 @@ set(HEADERS
     "src/Window.h" 
     "src/WindowsWindow.h" 
     "src/Base.h"
-)
+    "src/Framebuffer.h" 
+    "src/Math.h")
 
 set(SOURCES 
     "src/Main.cpp"
     "src/Application.cpp"
     "src/Window.cpp" 
     "src/WindowsWindow.cpp"
-)
+    "src/Framebuffer.cpp" 
+    "src/Math.cpp")
 
 set(TARGET RGS)
 add_executable(${TARGET} ${HEADERS} ${SOURCES})
