@@ -5,17 +5,44 @@
 
 namespace RGS {
 
+    Vec3 operator+ (const Vec3& left, const Vec3& right)
+    {
+        return Vec3{ left.X + right.X, left.Y + right.Y, left.Z + right.Z };
+    }
+    Vec3 operator- (const Vec3& left, const Vec3& right)
+    {
+        return left + (-1.0f * right);
+    }
+    Vec3 operator* (const float left, const Vec3& right)
+    {
+        return Vec3{ left * right.X, left * right.Y, left * right.Z };
+    }
+    Vec3 operator* (const Vec3& left, const float right)
+    {
+        return right * left;
+    }
+    Vec3 operator/ (const Vec3& left, const float right)
+    {
+        ASSERT(right != 0);
+        return left * (1.0f / right);
+    }
+
     float Dot(const Vec3& left, const Vec3& right)
     {
         return left.X * right.X + left.Y * right.Y + left.Z * right.Z;
     }
-
-    Mat4::Mat4(const Vec4& v0, const Vec4& v1, const Vec4& v2, const Vec4& v3)
+    Vec3 Cross(const Vec3& left, const Vec3& right)
     {
-        M[0][0] = v0.X; M[1][0] = v0.Y; M[2][0] = v0.Z; M[3][0] = v0.W;
-        M[0][1] = v1.X; M[1][1] = v1.Y; M[2][1] = v1.Z; M[3][1] = v1.W;
-        M[0][2] = v2.X; M[1][2] = v2.Y; M[2][2] = v2.Z; M[3][2] = v2.W;
-        M[0][3] = v3.X; M[1][3] = v3.Y; M[2][3] = v3.Z; M[3][3] = v3.W;
+        float x = left.Y * right.Z - left.Z * right.Y;
+        float y = left.Z * right.X - left.X * right.Z;
+        float z = left.X * right.Y - left.Y * right.X;
+        return { x, y, z };
+    }
+    Vec3 Normalize(const Vec3& v)
+    {
+        float len = (float)sqrt(v.X * v.X + v.Y * v.Y + v.Z * v.Z);
+        ASSERT(len != 0)
+        return v / len;
     }
 
     Vec4 operator* (const Mat4& mat4, const Vec4& vec4)
@@ -26,6 +53,14 @@ namespace RGS {
         res.Z = mat4.M[2][0] * vec4.X + mat4.M[2][1] * vec4.Y + mat4.M[2][2] * vec4.Z + mat4.M[2][3] * vec4.W;
         res.W = mat4.M[3][0] * vec4.X + mat4.M[3][1] * vec4.Y + mat4.M[3][2] * vec4.Z + mat4.M[3][3] * vec4.W;
         return res;
+    }
+
+    Mat4::Mat4(const Vec4& v0, const Vec4& v1, const Vec4& v2, const Vec4& v3)
+    {
+        M[0][0] = v0.X; M[1][0] = v0.Y; M[2][0] = v0.Z; M[3][0] = v0.W;
+        M[0][1] = v1.X; M[1][1] = v1.Y; M[2][1] = v1.Z; M[3][1] = v1.W;
+        M[0][2] = v2.X; M[1][2] = v2.Y; M[2][2] = v2.Z; M[3][2] = v2.W;
+        M[0][3] = v3.X; M[1][3] = v3.Y; M[2][3] = v3.Z; M[3][3] = v3.W;
     }
     Mat4 operator* (const Mat4& left, const Mat4& right)
     {
@@ -122,6 +157,44 @@ namespace RGS {
         m.M[1][3] = -Dot(yAxis, eye);
         m.M[2][3] = -Dot(zAxis, eye);
 
+        return m;
+    }
+    Mat4 Mat4LookAt(const Vec3& eye, const Vec3& target, const Vec3& up)
+    {
+        Vec3 zAxis = Normalize(eye - target);
+        Vec3 xAxis = Normalize(Cross(up, zAxis));
+        Vec3 yAxis = Normalize(Cross(zAxis, xAxis));
+        return Mat4LookAt(xAxis, yAxis, zAxis, eye);
+    }
+    /*
+    * fovy: the field of view angle in the y direction, in radians
+    * aspect: the aspect ratio, defined as width divided by height
+    * near, far: the distances to the near and far depth clipping planes
+    *
+    * 1/(aspect*tan(fovy/2))              0             0           0
+    *                      0  1/tan(fovy/2)             0           0
+    *                      0              0  -(f+n)/(f-n)  -2fn/(f-n)
+    *                      0              0            -1           0
+    *
+    * this is the same as
+    *     float half_h = near * (float)tan(fovy / 2);
+    *     float half_w = half_h * aspect;
+    *     mat4_frustum(-half_w, half_w, -half_h, half_h, near, far);
+    *
+    * see http://www.songho.ca/opengl/gl_projectionmatrix.html
+    */
+    Mat4 Mat4Perspective(float fovy, float aspect, float near, float far)
+    {
+        float z_range = far - near;
+        Mat4 m = Mat4Identity();
+        ASSERT(fovy > 0 && aspect > 0);
+        ASSERT(near > 0 && far > 0 && z_range > 0);
+        m.M[1][1] = 1 / (float)tan(fovy / 2);
+        m.M[0][0] = m.M[1][1] / aspect;
+        m.M[2][2] = -(near + far) / z_range;
+        m.M[2][3] = -2 * near * far / z_range;
+        m.M[3][2] = -1;
+        m.M[3][3] = 0;
         return m;
     }
 

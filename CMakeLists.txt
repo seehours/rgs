@@ -11,7 +11,9 @@ set(HEADERS
     "src/WindowsWindow.h" 
     "src/Base.h"
     "src/Framebuffer.h" 
-    "src/Math.h")
+    "src/Math.h" 
+    "src/ShaderBase.h"
+)
 
 set(SOURCES 
     "src/Main.cpp"

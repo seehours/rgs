@@ -92,8 +92,17 @@ namespace RGS {
             return res;
         }
     };
+    
+
+    Vec3 operator+ (const Vec3& left, const Vec3& right);
+    Vec3 operator- (const Vec3& left, const Vec3& right);
+    Vec3 operator* (const float left, const Vec3& right);
+    Vec3 operator* (const Vec3& left, const float right);
+    Vec3 operator* (const Vec3& left, const Vec3& right);
+    Vec3 operator/ (const Vec3& left, const float right);
 
     float Dot(const Vec3& left, const Vec3& right);
+    Vec3 Cross(const Vec3& left, const Vec3& right);
 
     Vec4 operator* (const Mat4& mat4, const Vec4& vec4);
     Mat4 operator* (const Mat4& left, const Mat4& right);
@@ -106,6 +115,8 @@ namespace RGS {
     Mat4 Mat4RotateY(float angle);
     Mat4 Mat4RotateZ(float angle);
     Mat4 Mat4LookAt(const Vec3& xAxis, const Vec3& yAxis, const Vec3& zAxis, const Vec3& eye);
+    Mat4 Mat4LookAt(const Vec3& eye, const Vec3& target, const Vec3& up);
+    Mat4 Mat4Perspective(float fovy, float aspect, float near, float far);
     
 	unsigned char Float2UChar(const float f);
 	float UChar2Float(const unsigned char c);
