@@ -1,5 +1,5 @@
 #pragma once
-#include "Math.h"
+#include "Maths.h"
 
 namespace RGS {
 
@@ -18,7 +18,7 @@ namespace RGS {
         void SetDepth(const int x, const int y, const float depth);
         float GetDepth(const int x, const int y) const;
 
-        void Clear(const Vec3& color = {0.0f, 0.0f, 0.0f});
+        void Clear(const Vec3& color = { 0.0f, 0.0f, 0.0f });
         void ClearDepth(float depth = 1.0f);
 
     private:

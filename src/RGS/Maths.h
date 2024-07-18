@@ -1,6 +1,9 @@
 #pragma once
 #include <string>
 
+#define PI 3.14159265359
+#define EPSILON 1e-5f
+
 namespace RGS {
 
     struct Vec2
@@ -13,22 +16,22 @@ namespace RGS {
             : X(x), Y(y) {}
     };
 
-	struct Vec3
-	{
+    struct Vec3
+    {
         float X, Y, Z;
 
-		// Learn constexpr: https://learn.microsoft.com/zh-cn/cpp/cpp/constexpr-cpp?view=msvc-170
-		constexpr Vec3()
-			: X(0.0f), Y(0.0f), Z(0.0f) {}
-		constexpr Vec3(float x, float y, float z)
-			: X(x), Y(y), Z(z) {}
+        // Learn constexpr: https://learn.microsoft.com/zh-cn/cpp/cpp/constexpr-cpp?view=msvc-170
+        constexpr Vec3()
+            : X(0.0f), Y(0.0f), Z(0.0f) {}
+        constexpr Vec3(float x, float y, float z)
+            : X(x), Y(y), Z(z) {}
 
         operator Vec2() const { return { X, Y }; }
-	};
+    };
 
-    struct Vec4 
+    struct Vec4
     {
-        float X ,Y, Z, W;
+        float X, Y, Z, W;
 
         constexpr Vec4()
             : X(0.0f), Y(0.0f), Z(0.0f), W(0.0f) {}
@@ -57,7 +60,7 @@ namespace RGS {
 
     };
 
-    // 按行优先存储，第一列向量为 [0][0] [1][0] [2][0] [3][0] <=> 0, 4, 8, 12
+    // 鎸夎浼樺厛瀛樺偍锛岀涓�鍒楀悜閲忎负 [0][0] [0][1] [0][2] [0][3] <=> 0, 4, 8, 12
     struct Mat4
     {
         float M[4][4];
@@ -73,7 +76,7 @@ namespace RGS {
             }
 
         }
-        // 按列存入
+
         Mat4(const Vec4& v0, const Vec4& v1, const Vec4& v2, const Vec4& v3);
 
         operator const std::string() const
@@ -92,13 +95,11 @@ namespace RGS {
             return res;
         }
     };
-    
 
     Vec3 operator+ (const Vec3& left, const Vec3& right);
     Vec3 operator- (const Vec3& left, const Vec3& right);
     Vec3 operator* (const float left, const Vec3& right);
     Vec3 operator* (const Vec3& left, const float right);
-    Vec3 operator* (const Vec3& left, const Vec3& right);
     Vec3 operator/ (const Vec3& left, const float right);
 
     float Dot(const Vec3& left, const Vec3& right);
@@ -117,7 +118,9 @@ namespace RGS {
     Mat4 Mat4LookAt(const Vec3& xAxis, const Vec3& yAxis, const Vec3& zAxis, const Vec3& eye);
     Mat4 Mat4LookAt(const Vec3& eye, const Vec3& target, const Vec3& up);
     Mat4 Mat4Perspective(float fovy, float aspect, float near, float far);
-    
-	unsigned char Float2UChar(const float f);
-	float UChar2Float(const unsigned char c);
+
+    float Lerp(const float start, const float end, const float t);
+
+    unsigned char Float2UChar(const float f);
+    float UChar2Float(const unsigned char c);
 }

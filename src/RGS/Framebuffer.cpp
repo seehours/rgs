@@ -11,8 +11,8 @@ namespace RGS {
         m_PixelSize = m_Width * m_Height;
         m_ColorBuffer = new Vec3[m_PixelSize]();
         m_DepthBuffer = new float[m_PixelSize]();
-        Clear({ 0.0f, 0.0f, 0.0f });
-        ClearDepth(1.0f);
+        Clear();
+        ClearDepth();
     }
 
     Framebuffer::~Framebuffer()

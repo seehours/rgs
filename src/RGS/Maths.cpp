@@ -1,9 +1,11 @@
-#include "Math.h"
+#include "Maths.h"
 
 #include "Base.h"
-#include <math.h>
+#include <cmath>
 
 namespace RGS {
+
+    constexpr int RGS_MAX_VARYINGS = 9;
 
     Vec3 operator+ (const Vec3& left, const Vec3& right)
     {
@@ -40,9 +42,9 @@ namespace RGS {
     }
     Vec3 Normalize(const Vec3& v)
     {
-        float len = (float)sqrt(v.X * v.X + v.Y * v.Y + v.Z * v.Z);
+        float len = (float)std::sqrt(v.X * v.X + v.Y * v.Y + v.Z * v.Z);
         ASSERT(len != 0)
-        return v / len;
+            return v / len;
     }
 
     Vec4 operator* (const Mat4& mat4, const Vec4& vec4)
@@ -106,8 +108,8 @@ namespace RGS {
     }
     Mat4 Mat4RotateX(float angle)
     {
-        float c = (float)cos(angle);
-        float s = (float)sin(angle);
+        float c = (float)std::cos(angle);
+        float s = (float)std::sin(angle);
         Mat4 m = Mat4Identity();
         m.M[1][1] = c;
         m.M[1][2] = -s;
@@ -117,8 +119,8 @@ namespace RGS {
     }
     Mat4 Mat4RotateY(float angle)
     {
-        float c = (float)cos(angle);
-        float s = (float)sin(angle);
+        float c = (float)std::cos(angle);
+        float s = (float)std::sin(angle);
         Mat4 m = Mat4Identity();
         m.M[2][2] = c;
         m.M[2][0] = -s;
@@ -128,8 +130,8 @@ namespace RGS {
     }
     Mat4 Mat4RotateZ(float angle)
     {
-        float c = (float)cos(angle);
-        float s = (float)sin(angle);
+        float c = (float)std::cos(angle);
+        float s = (float)std::sin(angle);
         Mat4 m = Mat4Identity();
         m.M[0][0] = c;
         m.M[0][1] = -s;
@@ -189,13 +191,18 @@ namespace RGS {
         Mat4 m = Mat4Identity();
         ASSERT(fovy > 0 && aspect > 0);
         ASSERT(near > 0 && far > 0 && z_range > 0);
-        m.M[1][1] = 1 / (float)tan(fovy / 2);
+        m.M[1][1] = 1 / (float)std::tan(fovy / 2);
         m.M[0][0] = m.M[1][1] / aspect;
         m.M[2][2] = -(near + far) / z_range;
         m.M[2][3] = -2 * near * far / z_range;
         m.M[3][2] = -1;
         m.M[3][3] = 0;
         return m;
+    }
+
+    float Lerp(const float start, const float end, const float t)
+    {
+        return end * t + start * (1.0f - t);
     }
 
     unsigned char Float2UChar(const float f)

@@ -34,15 +34,15 @@ namespace RGS {
         WNDCLASS wc = { 0 };
         wc.cbClsExtra = 0;
         wc.cbWndExtra = 0;
-        wc.hbrBackground = (HBRUSH)(WHITE_BRUSH);       // ±³¾°É«
-        wc.hCursor = NULL;                              // Ä¬ÈÏ¹â±ê
-        wc.hIcon = NULL;                                // Ä¬ÈÏÍ¼±ê
+        wc.hbrBackground = (HBRUSH)(WHITE_BRUSH);
+        wc.hCursor = NULL;                            // é»˜è®¤å…‰æ ‡ 
+        wc.hIcon = NULL;                              // é»˜è®¤å›¾æ ‡ 
         wc.hInstance = GetModuleHandle(NULL);
-        wc.lpfnWndProc = WindowsWindow::WndProc;        // ´°¿Ú´¦Àíº¯Êı
+        wc.lpfnWndProc = WindowsWindow::WndProc;      // çª—å£å¤„ç†å‡½æ•°      
         wc.lpszClassName = RGS_WINDOW_CLASS_NAME;
-        wc.style = CS_HREDRAW | CS_VREDRAW;             // À­ÉìÊ±ÖØ»æ
-        wc.lpszMenuName = NULL;                         // ²»Òª²Ëµ¥
-        atom = RegisterClass(&wc);                      // ×¢²á´°¿Ú
+        wc.style = CS_HREDRAW | CS_VREDRAW;           // æ‹‰ä¼¸æ—¶é‡ç»˜
+        wc.lpszMenuName = NULL;                       // ä¸è¦èœå•  
+        atom = RegisterClass(&wc);                    // æ³¨å†Œçª—å£  
     }
 
     void WindowsWindow::Unregister()
@@ -53,7 +53,7 @@ namespace RGS {
     WindowsWindow::WindowsWindow(const std::string title, const int width, const int height)
         :Window(title, width, height)
     {
-        ASSERT((s_Inited), "Î´³õÊ¼»¯");
+        ASSERT((s_Inited), "æœªåˆå§‹åŒ–ï¼Œå°è¯• RGS::WindowsWindow::Init()");
 
         DWORD style = WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX;
         RECT rect;
@@ -83,7 +83,7 @@ namespace RGS {
         biHeader.biBitCount = 24;
         biHeader.biCompression = BI_RGB;
 
-        // ·ÖÅä¿Õ¼ä
+        // åˆ†é…ç©ºé—´
         // https://learn.microsoft.com/zh-cn/windows/win32/api/wingdi/nf-wingdi-createdibsection
         newBitmap = CreateDIBSection(m_MemoryDC, (BITMAPINFO*)&biHeader, DIB_RGB_COLORS, (void**)&m_Buffer, nullptr, 0);
         ASSERT(newBitmap != nullptr);
@@ -175,7 +175,7 @@ namespace RGS {
 
     void WindowsWindow::DrawFramebuffer(const Framebuffer& framebuffer)
     {
-        // ¾¡¿ÉÄÜÏÔÊ¾
+        // å°½å¯èƒ½æ˜¾ç¤º
         const int fWidth = framebuffer.GetWidth();
         const int fHeight = framebuffer.GetHeight();
         const int width = m_Width < fWidth ? m_Width : fWidth;
@@ -184,7 +184,7 @@ namespace RGS {
         {
             for (int j = 0; j < width; j++)
             {
-                // ·­×ªRGBÏÔÊ¾
+                // ç¿»è½¬RGBæ˜¾ç¤º
                 constexpr int channelCount = 3;
                 constexpr int rChannel = 2;
                 constexpr int gChannel = 1;

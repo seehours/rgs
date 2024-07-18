@@ -6,22 +6,31 @@ project(RGS LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 17)
 
 set(HEADERS
-    "src/Application.h"
-    "src/Window.h" 
-    "src/WindowsWindow.h" 
-    "src/Base.h"
-    "src/Framebuffer.h" 
-    "src/Math.h" 
-    "src/ShaderBase.h"
+    "src/RGS/Application.h"
+    "src/RGS/Window.h" 
+    "src/RGS/WindowsWindow.h" 
+    "src/RGS/Base.h"
+    "src/RGS/Framebuffer.h" 
+    "src/RGS/Maths.h" 
+    "src/RGS/Shaders/ShaderBase.h"
+    "src/RGS/Shaders/BlinnShader.h"
+    "src/RGS/Renderer.h"
 )
 
 set(SOURCES 
-    "src/Main.cpp"
-    "src/Application.cpp"
-    "src/Window.cpp" 
-    "src/WindowsWindow.cpp"
-    "src/Framebuffer.cpp" 
-    "src/Math.cpp")
+    "src/RGS/Main.cpp"
+    "src/RGS/Application.cpp"
+    "src/RGS/Window.cpp" 
+    "src/RGS/WindowsWindow.cpp"
+    "src/RGS/Framebuffer.cpp" 
+    "src/RGS/Maths.cpp"
+    "src/RGS/Shaders/BlinnShader.cpp"
+)
+
+set(INCLUDE_PATH 
+    "src"
+)
 
 set(TARGET RGS)
 add_executable(${TARGET} ${HEADERS} ${SOURCES})
+target_include_directories(${TARGET} PRIVATE ${INCLUDE_PATH})

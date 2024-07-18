@@ -1,9 +1,13 @@
-#include "Application.h"
+#include "RGS/Application.h"
 
-#include "Math.h"
+#include "RGS/Maths.h"
+#include "RGS/Shaders/BlinnShader.h"
+
 #include <iostream>
 
-int main ()
+constexpr int test = 9;
+
+int main()
 {
     std::cout << "Hello RGS!" << std::endl;
     RGS::Application app("RGS", 400, 300);
