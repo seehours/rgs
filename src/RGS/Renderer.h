@@ -222,10 +222,6 @@ namespace RGS {
                                       const varyings_t(&varyings)[3],
                                       const uniforms_t& uniforms)
         {
-
-
-
-
             for (int i = 0; i < 3; i++)
             {
                 int x = varyings[i].FragPos.X;
