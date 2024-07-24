@@ -185,6 +185,65 @@ namespace RGS {
             return vertexNum;
         }
 
+        template<typename varyings_t>
+        static void CaculateNdcPos(varyings_t(&varyings)[RGS_MAX_VARYINGS], const int vertexNum)
+        {
+            for (int i = 0; i < vertexNum; i++)
+            {
+                float w = varyings[i].ClipPos.W;
+                varyings[i].NdcPos = varyings[i].ClipPos / w;
+                varyings[i].NdcPos.W = 1.0f / w;
+            }
+        }
+
+        template<typename varyings_t>
+        static void CaculateFragPos(varyings_t(&varyings)[RGS_MAX_VARYINGS], 
+                                    const int vertexNum, 
+                                    const float width, 
+                                    const float height)
+        {
+            for (int i = 0; i < vertexNum; i++)
+            {
+                float x = ((varyings[i].NdcPos.X + 1.0f) * 0.5f * width);
+                float y = ((varyings[i].NdcPos.Y + 1.0f) * 0.5f * height);
+                float z = (varyings[i].NdcPos.Z + 1.0f) * 0.5f;
+                float w = varyings[i].NdcPos.W;
+
+                varyings[i].FragPos.X = x;
+                varyings[i].FragPos.Y = y;
+                varyings[i].FragPos.Z = z;
+                varyings[i].FragPos.W = w;
+            }
+        }
+
+        template<typename vertex_t, typename uniforms_t, typename varyings_t>
+        static void RasterizeTriangle(Framebuffer& framebuffer,
+                                      const Program<vertex_t, uniforms_t, varyings_t>& program,
+                                      const varyings_t(&varyings)[3],
+                                      const uniforms_t& uniforms)
+        {
+
+
+
+
+            for (int i = 0; i < 3; i++)
+            {
+                int x = varyings[i].FragPos.X;
+                int y = varyings[i].FragPos.Y;
+
+                float r = (varyings[i].NdcPos.X + 1.0f) / 2.0f;
+                float g = (varyings[i].NdcPos.Y + 1.0f) / 2.0f;
+
+                for (int j = -5; j < 6; j++)
+                {
+                    for (int k = -5; k < 6; k++)
+                    {
+                        framebuffer.SetColor(x + j, y + k, { r, g, 1.0f });
+                    }
+                }
+            }
+        }
+
     public:
 
         template<typename vertex_t, typename uniforms_t, typename varyings_t>
@@ -205,6 +264,23 @@ namespace RGS {
 
             /* Clipping */
             int vertexNum = Clip(varyings);
+
+            /* Screen Mapping */
+            CaculateNdcPos(varyings, vertexNum);
+            int fWidth = framebuffer.GetWidth();
+            int fHeight = framebuffer.GetHeight();
+            CaculateFragPos(varyings, vertexNum, (float)fWidth, (float)fHeight);
+
+            /* Triangle Assembly & Rasterization */
+            for (int i = 0; i < vertexNum - 2; i++)
+            {
+                varyings_t triVaryings[3];
+                triVaryings[0] = varyings[0];
+                triVaryings[1] = varyings[i + 1];
+                triVaryings[2] = varyings[i + 2];
+
+                RasterizeTriangle(framebuffer, program, triVaryings, uniforms);
+            }
         }
     };
 }

@@ -25,56 +25,58 @@ namespace RGS {
 
     void Framebuffer::SetColor(const int x, const int y, const Vec3& color)
     {
-        int index = GetPixelIndex(x, y);
-        if (index < m_PixelSize && index >= 0)
+        if ((x < 0) || (x >= m_Width) || (y < 0) || (y >= m_Height))
         {
-            m_ColorBuffer[index] = color;
+            ASSERT(false);
+            return;
         }
         else
         {
-            ASSERT(false);
+            int index = GetPixelIndex(x, y);
+            m_ColorBuffer[index] = color;
         }
     }
 
     Vec3 Framebuffer::GetColor(const int x, const int y) const
     {
-        int index = GetPixelIndex(x, y);
-        if (index < m_PixelSize && index >= 0)
+        if ((x < 0) || (x >= m_Width) || (y < 0) || (y >= m_Height))
         {
-            return m_ColorBuffer[index];
+            ASSERT(false);
+            return {0.0f, 0.0f, 0.0f};
         }
         else
         {
-            ASSERT(false);
-            return { 0.0f, 0.0f ,0.0f };
+            int index = GetPixelIndex(x, y);
+            return m_ColorBuffer[index];
         }
     }
 
     void Framebuffer::SetDepth(const int x, const int y, const float depth)
     {
-        int index = GetPixelIndex(x, y);
-        if (index < m_PixelSize && index >= 0)
+
+        if ((x < 0) || (x >= m_Width) || (y < 0) || (y >= m_Height))
         {
-            m_DepthBuffer[index] = depth;
+            ASSERT(false);
+            return;
         }
         else
         {
-            ASSERT(false);
+            int index = GetPixelIndex(x, y);
+            m_DepthBuffer[index] = depth;
         }
     }
 
     float Framebuffer::GetDepth(const int x, const int y) const
     {
-        int index = GetPixelIndex(x, y);
-        if (index < m_PixelSize && index >= 0)
-        {
-            float depth = m_DepthBuffer[index];
-            return depth;
-        }
-        else
+        if ((x < 0) || (x >= m_Width) || (y < 0) || (y >= m_Height))
         {
             ASSERT(false);
             return 0.0f;
+        }
+        else
+        {
+            int index = GetPixelIndex(x, y);
+            float depth = m_DepthBuffer[index];
         }
     }
 
