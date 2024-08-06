@@ -5,7 +5,14 @@
 
 namespace RGS {
 
-    constexpr int RGS_MAX_VARYINGS = 9;
+    Vec2 operator+ (const Vec2& left, const Vec2& right)
+    {
+        return Vec2{ left.X + right.X, left.Y + right.Y };
+    }
+    Vec2 operator- (const Vec2& left, const Vec2& right)
+    {
+        return Vec2{ left.X - right.X, left.Y - right.Y };
+    }
 
     Vec3 operator+ (const Vec3& left, const Vec3& right)
     {
@@ -235,4 +242,21 @@ namespace RGS {
     {
         return (float)c / 255.0f;
     }
+
+    float Clamp(const float val, const float min, const float max)
+    {
+        if (val < min)
+        {
+            return min;
+        }
+        else if (val > max)
+        {
+            return max;
+        }
+        else
+        {
+            return val;
+        }
+    }
+
 }
