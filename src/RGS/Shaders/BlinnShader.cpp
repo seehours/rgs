@@ -9,12 +9,21 @@ namespace RGS {
 
     Vec4 BlinnFragmentShader(bool& discard, const BlinnVaryings& varyings, const BlinnUniforms& uniforms)
     {
-        int x = varyings.FragPos.X;
-        if (x % 10 < 5)
+        if (uniforms.IsAnother)
         {
-            discard = true;
-            return { 0.0f, 0.0f, 0.0f, 1.0f };
+            Vec4 color = varyings.NdcPos * 0.5f + 0.5f;
+            color.W = 1.0f;
+            return color;
         }
-        return {  0.0f, varyings.NdcPos.X / 2 + 0.5f, varyings.NdcPos.Y / 2 + 0.5f, 1.0f };
+        else
+        {
+            int x = varyings.FragPos.X;
+            if ((x + 10) % 10 > 4)
+            {
+                discard = true;
+                return Vec4{ 0.0f };
+            }
+            return Vec4{ 1.0f, 1.0f, 1.0f, 0.5f };
+        }
     }
 }

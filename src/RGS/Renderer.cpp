@@ -36,9 +36,35 @@ namespace RGS {
         return weights[0] >= -EPSILON && weights[1] >= -EPSILON && weights[2] >= -EPSILON;
     }
 
+    bool Renderer::IsBackFacing(const Vec4& a, const Vec4& b, const Vec4& c)
+    {
+        // 逆时针为正面（可见）
+        float signedArea = a.X * b.Y - a.Y * b.X +
+                           b.X * c.Y - b.Y * c.X +
+                           c.X * a.Y - c.Y * a.X;
+        return signedArea <= 0;
+    }
+
+    bool Renderer::PassDepthTest(const float writeDepth, const float fDepth, const DepthFuncType depthFunc)
+    {
+        switch (depthFunc)
+        {
+        case DepthFuncType::LESS:
+            return fDepth - writeDepth > EPSILON;
+        case DepthFuncType::LEQUAL:
+            return fDepth - writeDepth >= -EPSILON;
+        case DepthFuncType::ALWAYS:
+            return true;
+        default:
+            return false;
+        }
+    }
+
     float Renderer::GetIntersectRatio(const Vec4& prev, const Vec4& curr, const Plane plane)
     {
         switch (plane) {
+        case Plane::POSITIVE_W:
+            return (prev.W - 0.0f) / (prev.W - curr.W);
         case Plane::POSITIVE_X:
             return (prev.W - prev.X) / ((prev.W - prev.X) - (curr.W - curr.X));
         case Plane::NEGATIVE_X:

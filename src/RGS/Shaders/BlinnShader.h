@@ -15,6 +15,7 @@ namespace RGS {
 
     struct BlinnUniforms : public UniformsBase
     {
+        bool IsAnother = false;
     };
 
     void BlinnVertexShader(BlinnVaryings& varyings, const BlinnVertex& vertex, const BlinnUniforms& uniforms);

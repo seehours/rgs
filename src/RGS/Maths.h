@@ -109,13 +109,13 @@ namespace RGS {
 
     float Dot(const Vec3& left, const Vec3& right);
     Vec3 Cross(const Vec3& left, const Vec3& right);
+    Vec3 Normalize(const Vec3& v);
 
     Vec4 operator+ (const Vec4& left, const Vec4& right);
     Vec4 operator- (const Vec4& left, const Vec4& right);
     Vec4 operator* (const float left, const Vec4& right);
     Vec4 operator* (const Vec4& left, const float right);
     Vec4 operator/ (const Vec4& left, const float right);
-
     Vec4 operator* (const Mat4& mat4, const Vec4& vec4);
     Mat4 operator* (const Mat4& left, const Mat4& right);
     Mat4& operator*= (Mat4& left, const Mat4& right);
@@ -131,6 +131,8 @@ namespace RGS {
     Mat4 Mat4Perspective(float fovy, float aspect, float near, float far);
 
     float Lerp(const float start, const float end, const float t);
+    Vec3 Lerp(const Vec3& start, const Vec3& end, const float t);
+    Vec4 Lerp(const Vec4& start, const Vec4& end, const float t);
 
     unsigned char Float2UChar(const float f);
     float UChar2Float(const unsigned char c);

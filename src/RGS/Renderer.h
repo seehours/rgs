@@ -21,9 +21,23 @@ namespace RGS {
         Triangle() = default;
     };
 
+    enum class DepthFuncType
+    {
+        LESS,
+        LEQUAL,
+        ALWAYS,
+    };
+
     template<typename vertex_t, typename uniforms_t, typename varyings_t>
     struct Program
     {
+        bool EnableDepthTest = true;
+        bool EnableWriteDepth = true;
+        bool EnableBlend = true;
+        bool EnableDoubleSided = false;
+
+        DepthFuncType DepthFunc = DepthFuncType::LESS;
+
         using vertex_shader_t = void (*)(varyings_t&, const vertex_t&, const uniforms_t&);
         vertex_shader_t VertexShader;
 
@@ -57,6 +71,8 @@ namespace RGS {
         static bool IsVertexVisible(const Vec4& clipPos);
         static bool IsInsidePlane(const Vec4& clipPos, const Plane plane);
         static bool IsInsideTriangle(float(&weights)[3]);
+        static bool IsBackFacing(const Vec4& a, const Vec4& b, const Vec4& c);
+        static bool PassDepthTest(const float writeDepth, const float fDepth, const DepthFuncType depthFunc);
 
         static float GetIntersectRatio(const Vec4& prev, const Vec4& curr, const Plane plane);
         static BoundingBox GetBoundingBox(const Vec4(&fragCoords)[3], const int width, const int height);
@@ -90,8 +106,8 @@ namespace RGS {
             out.NdcPos = out.ClipPos / out.ClipPos.W;
             out.NdcPos.W = 1.0f / out.ClipPos.W;
 
-            out.FragPos.X = ((out.NdcPos.X + 1.0f) * 0.5f * 400);
-            out.FragPos.Y = ((out.NdcPos.Y + 1.0f) * 0.5f * 300);
+            out.FragPos.X = ((out.NdcPos.X + 1.0f) * 0.5f * width);
+            out.FragPos.Y = ((out.NdcPos.Y + 1.0f) * 0.5f * height);
             out.FragPos.Z = (out.NdcPos.Z + 1.0f) * 0.5f;
             out.FragPos.W = out.NdcPos.W;
 
@@ -228,7 +244,25 @@ namespace RGS {
             color.Z = Clamp(color.Z, 0.0f, 1.0f);
             color.W = Clamp(color.W, 0.0f, 1.0f);
 
-            framebuffer.SetColor(x, y, color);
+            /* Blend */
+            if (program.EnableBlend)
+            {
+                Vec3 dstColor = framebuffer.GetColor(x, y);
+                Vec3 srcColor = color;
+                float alpha = color.W;
+                color = { Lerp(dstColor, srcColor, alpha), 1.0f };
+                framebuffer.SetColor(x, y, color);
+            }
+            else
+            {
+                framebuffer.SetColor(x, y, color);
+            }
+
+            if (program.EnableWriteDepth)
+            {
+                float depth = varyings.FragPos.Z;
+                framebuffer.SetDepth(x, y, depth);
+            }
         }
 
         template<typename vertex_t, typename uniforms_t, typename varyings_t>
@@ -237,6 +271,17 @@ namespace RGS {
                                       const varyings_t(&varyings)[3],
                                       const uniforms_t& uniforms)
         {
+            /* Back Face Culling */
+            if (!program.EnableDoubleSided)
+            {
+                bool isBackFacing = false;
+                isBackFacing = IsBackFacing(varyings[0].NdcPos, varyings[1].NdcPos, varyings[2].NdcPos);
+                if (isBackFacing)
+                {
+                    return;
+                }
+            }
+
             int width = framebuffer.GetWidth();
             int height = framebuffer.GetHeight();
             /* Bounding Box Setup */
@@ -261,6 +306,18 @@ namespace RGS {
 
                     varyings_t pixVaryings;
                     LerpVaryings(pixVaryings, varyings, weights, width, height);
+
+                    /* Early Depth Test */
+                    if (program.EnableDepthTest)
+                    {
+                        float depth = pixVaryings.FragPos.Z;
+                        float fDepth = framebuffer.GetDepth(x, y);
+                        DepthFuncType depthFunc = program.DepthFunc;
+                        if (!PassDepthTest(depth, fDepth, depthFunc))
+                        {
+                            continue;
+                        }
+                    }
 
                     /* Pixel Processing */
                     ProcessPixel(framebuffer, x, y, program, pixVaryings, uniforms);

@@ -50,8 +50,8 @@ namespace RGS {
     Vec3 Normalize(const Vec3& v)
     {
         float len = (float)std::sqrt(v.X * v.X + v.Y * v.Y + v.Z * v.Z);
-        ASSERT(len != 0)
-            return v / len;
+        ASSERT(len != 0);
+        return v / len;
     }
 
     Vec4 operator+ (const Vec4& left, const Vec4& right)
@@ -230,6 +230,16 @@ namespace RGS {
     }
 
     float Lerp(const float start, const float end, const float t)
+    {
+        return end * t + start * (1.0f - t);
+    }
+
+    Vec3 Lerp(const Vec3& start, const Vec3& end, const float t)
+    {
+        return end * t + start * (1.0f - t);
+    }
+
+    Vec4 Lerp(const Vec4& start, const Vec4& end, const float t)
     {
         return end * t + start * (1.0f - t);
     }
