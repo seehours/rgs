@@ -76,7 +76,7 @@ namespace RGS {
         else
         {
             int index = GetPixelIndex(x, y);
-            float depth = m_DepthBuffer[index];
+            return m_DepthBuffer[index];
         }
     }
 

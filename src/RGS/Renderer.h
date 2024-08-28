@@ -19,6 +19,16 @@ namespace RGS {
         const vertex_t& operator[](size_t i) const { return Vertex[i]; }
 
         Triangle() = default;
+
+        friend std::ostream& operator<<(std::ostream& os, const Triangle<vertex_t>& triangle) 
+        {
+            os << "Triangle: {\n";
+            for (int i = 0; i < 3; ++i) {
+                os << "  Vertex[" << i << "]: " << triangle.Vertex[i] << "\n";
+            }
+            os << "}";
+            return os;
+        }
     };
 
     enum class DepthFuncType
@@ -33,7 +43,7 @@ namespace RGS {
     {
         bool EnableDepthTest = true;
         bool EnableWriteDepth = true;
-        bool EnableBlend = true;
+        bool EnableBlend = false;
         bool EnableDoubleSided = false;
 
         DepthFuncType DepthFunc = DepthFuncType::LESS;
@@ -289,7 +299,7 @@ namespace RGS {
             fragCoords[0] = varyings[0].FragPos;
             fragCoords[1] = varyings[1].FragPos;
             fragCoords[2] = varyings[2].FragPos;
-            BoundingBox bBox = GetBoundingBox(fragCoords, framebuffer.GetWidth(), framebuffer.GetHeight());
+            BoundingBox bBox = GetBoundingBox(fragCoords, width, height);
 
             for (int y = bBox.MinY; y <= bBox.MaxY; y++)
             {

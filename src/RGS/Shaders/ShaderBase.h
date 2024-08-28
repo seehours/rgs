@@ -1,5 +1,6 @@
 #pragma once
 #include "RGS/Maths.h"
+#include <iostream>
 #include <string>
 
 namespace RGS {
@@ -8,6 +9,11 @@ namespace RGS {
     {
         Vec4 ModelPos = { 0, 0, 0, 1 };
         operator const std::string() const { return "ModelPos: " + (std::string)ModelPos; }
+
+        friend std::ostream& operator<<(std::ostream& os, const VertexBase& vb) 
+        {
+            return os << (std::string)vb;
+        }
     };
 
     struct VaryingsBase

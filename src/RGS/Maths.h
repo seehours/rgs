@@ -1,4 +1,5 @@
 #pragma once
+#include <iostream>
 #include <string>
 
 #define PI 3.14159265359
@@ -14,6 +15,15 @@ namespace RGS {
             : X(0.0f), Y(0.0f) {}
         constexpr Vec2(float x, float y)
             : X(x), Y(y) {}
+
+        operator std::string() const
+        {
+            return "(" + std::to_string(X) + ", " + std::to_string(Y) + ")";
+        }
+        friend std::ostream& operator<<(std::ostream& os, const Vec2& vec) 
+        {
+            return os << (std::string)vec;
+        }
     };
 
     struct Vec3
@@ -27,6 +37,15 @@ namespace RGS {
             : X(x), Y(y), Z(z) {}
 
         operator Vec2() const { return { X, Y }; }
+
+        operator std::string() const
+        {
+            return "(" + std::to_string(X) + ", " + std::to_string(Y) + ", " + std::to_string(X) + ")";
+        }
+        friend std::ostream& operator<<(std::ostream& os, const Vec3& vec)
+        {
+            return os << (std::string) vec;
+        }
     };
 
     struct Vec4
@@ -45,21 +64,14 @@ namespace RGS {
         operator Vec2() const { return { X, Y }; }
         operator Vec3() const { return { X, Y, Z }; }
 
-        operator std::string() const
+        operator std::string() const 
         {
-            std::string res;
-            res += "(";
-            res += std::to_string(X);
-            res += ", ";
-            res += std::to_string(Y);
-            res += ", ";
-            res += std::to_string(Z);
-            res += ", ";
-            res += std::to_string(W);
-            res += ")";
-            return res;
+            return "(" + std::to_string(X) + ", " + std::to_string(Y) + ", " + std::to_string(Z) + ", " + std::to_string(W) + ")";
         }
-
+        friend std::ostream& operator<<(std::ostream& os, const Vec4& vec)
+        {
+            return os << (std::string)vec;
+        }
     };
 
     // 按行优先存储，第一列向量为 [0][0] [0][1] [0][2] [0][3] <=> 0, 4, 8, 12
@@ -105,6 +117,7 @@ namespace RGS {
     Vec3 operator- (const Vec3& left, const Vec3& right);
     Vec3 operator* (const float left, const Vec3& right);
     Vec3 operator* (const Vec3& left, const float right);
+    Vec3 operator* (const Vec3& left, const Vec3& right);
     Vec3 operator/ (const Vec3& left, const float right);
 
     float Dot(const Vec3& left, const Vec3& right);
