@@ -1,0 +1,44 @@
+[Header]
+ICOfile = "container_free_Thumb.tga"
+Name = "Container Free"
+Author = "HDRI Hub"
+Location = "Hamburg, Germany"
+Comment = "container, place, clear, noon"
+PREVIEWfile = "container_free_Prev.tga"
+GEOlat = 53.6108779907226560
+GEOlong = 8.7906798720359802
+Link = "http://www.hdri-hub.com/free-samples"
+Date = "2010:07:17"
+Time = "14:10:41"
+
+[Background]
+BGfile = "container_free_Bg.jpg"
+BGmap = 1
+BGu = 0.000000
+BGv = 0.000000
+BGheight = 1536
+
+[Enviroment]
+EVfile = "container_free_Env.hdr"
+EVmap = 1
+EVu = 0.000000
+EVv = 0.000000
+EVheight = 256
+EVmulti = 0.771930
+EVgamma = 1.000000
+
+[Reflection]
+REFfile = "container_free_Ref.hdr"
+REFmap = 1
+REFu = 0.000000
+REFv = 0.000000
+REFheight = 1536
+REFmulti = 0.771930
+REFgamma = 1.000000
+
+[Sun]
+SUNcolor = 254,247,238
+SUNmulti = 1.044707
+SUNu = 0.100000
+SUNv = 0.220000
+
