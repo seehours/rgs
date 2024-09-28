@@ -164,16 +164,16 @@ namespace RGS {
         prefilterEnvMapDir.insert(0, ".\\Assets\\prefilter_envmap\\");
 
 #ifdef _WIN32
-    int ret = _mkdir(prefilterEnvMapDir.c_str());
+        int ret = _mkdir(prefilterEnvMapDir.c_str());
+
+        if (ret == -1)
+        {
+            std::cout << "创建目录失败" << std::endl;
+            return;
+        }
 #else
     mkdir(prefilterEnvMapDir.c_str());
 #endif
-       
-        if (ret == -1)
-        {
-            std::cout << "创建文件夹失败" << std::endl;
-            return;
-        }
 
         std::unique_ptr<LodTextureSphere> skybox(new LodTextureSphere(skyboxPath));
         

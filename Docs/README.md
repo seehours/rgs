@@ -31,8 +31,8 @@ git clone https://github.com/seehours/rgs
 cd rgs
 mkdir build
 cd build
-cmake ..
-cmake --build
+cmake .. -DCMAKE_BUILD_TYPE=Release
+cmake --build . --config Release
 # 然后点击 RGS.exe 运行
 ```
 

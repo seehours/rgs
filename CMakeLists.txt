@@ -103,6 +103,14 @@ set(INCLUDE_PATH
     "RGS/src"
 )
 
+# ==============================================================================
+# Compile options
+# ==============================================================================
+
+if (MSVC)
+    add_compile_options(/wd4819)  # Disable warning C4819
+endif()
+
 set(TARGET "RGS")
 
 add_executable(${TARGET} ${RGS_SOURCES} ${IMGUI_SOURCES} ${HEADERS} "RGS/src/Main.cpp")
@@ -111,17 +119,24 @@ target_link_libraries(${TARGET} ${IMGUI_LINK_LIBRARY})
 
 target_precompile_headers(${TARGET} PRIVATE "RGS/src/rgspch.h")
 
-#判断
-# Debug 配置
-if (${CMAKE_BUILD_TYPE} STREQUAL "Debug")
-    target_compile_definitions(${TARGET} PRIVATE RGS_BUILD_DEBUG)
-# Release 配置
-elseif (${CMAKE_BUILD_TYPE} STREQUAL "Release")
+
+if(DEFINED CMAKE_BUILD_TYPE)
+    # Debug 配置
+    if("${CMAKE_BUILD_TYPE}" STREQUAL "Debug")
+        target_compile_definitions(${TARGET} PRIVATE RGS_BUILD_DEBUG)
+    # Release 配置
+    elseif("${CMAKE_BUILD_TYPE}" STREQUAL "Release")
+        target_compile_definitions(${TARGET} PRIVATE RGS_BUILD_RELEASE)
+    # RelWithDebInfo 配置
+    elseif("${CMAKE_BUILD_TYPE}" STREQUAL "RelWithDebInfo")
+        target_compile_definitions(${TARGET} PRIVATE RGS_BUILD_RELEASE)
+    else()
+        message(WARNING "Unknown build type: ${CMAKE_BUILD_TYPE}")
+    endif()
+else()
+    message(WARNING "[RGS] CMAKE_BUILD_TYPE is not set or is empty. Defaulting to Release configuration.")
     target_compile_definitions(${TARGET} PRIVATE RGS_BUILD_RELEASE)
-# 其他配置
-elseif (${CMAKE_BUILD_TYPE} STREQUAL "RelWithDebInfo")
-    target_compile_definitions(${TARGET} PRIVATE RGS_BUILD_RELEASE)
-endif ()
+endif()
 
 set(ASSETS_SRC "${CMAKE_SOURCE_DIR}/Assets")
 set(ASSETS_DST "$<TARGET_FILE_DIR:${TARGET}>/Assets")
@@ -139,5 +154,24 @@ add_custom_command(
     COMMAND ${CMAKE_COMMAND} -E ${ASSETS_CMD}
     "${ASSETS_SRC}" "${ASSETS_DST}")
 
+
+set(ASSETS_SRC "${CMAKE_SOURCE_DIR}/Assets/imgui.ini")
+set(ASSETS_DST "$<TARGET_FILE_DIR:${TARGET}>")
+
+set(ASSETS_CMD copy)
+set(ASSETS_MSG "[RGS] [post build] Copy Assets")
+
+add_custom_command(
+    TARGET ${TARGET} POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E echo
+    "${ASSETS_MSG}: ${ASSETS_SRC} to ${ASSETS_DST}")
+
+add_custom_command(
+    TARGET ${TARGET} POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E ${ASSETS_CMD}
+    "${ASSETS_SRC}" "${ASSETS_DST}")
+
 # 设置启动项目
 set_directory_properties(PROPERTIES VS_STARTUP_PROJECT ${TARGET})
+
+
