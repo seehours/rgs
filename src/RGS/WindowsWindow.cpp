@@ -2,7 +2,7 @@
 
 #include "Base.h"
 #include "Window.h"
-#include "Math.h"
+#include "Maths.h"
 #include "Framebuffer.h"
 
 #include <windows.h>
